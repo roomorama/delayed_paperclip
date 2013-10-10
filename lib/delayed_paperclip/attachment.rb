@@ -18,7 +18,7 @@ module DelayedPaperclip
 
       # Attr accessor in Paperclip
       def post_processing_with_delay
-        !delay_processing?
+        !delay_processing? || split_processing?
       end
 
       def post_processing_with_delay=(value)
@@ -33,6 +33,12 @@ module DelayedPaperclip
         else
           !@post_processing_with_delay
         end
+      end
+      
+      def split_processing?
+        @instance.class.paperclip_definitions[@name][:only_process] && 
+          @instance.class.paperclip_definitions[@name][:only_process] != 
+            @instance.class.paperclip_definitions[@name][:delayed][:only_process]
       end
 
       def processing?
