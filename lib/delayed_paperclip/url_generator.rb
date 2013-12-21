@@ -8,7 +8,7 @@ module DelayedPaperclip
     end
 
     def most_appropriate_url_with_processed
-      if @attachment.original_filename.nil? || delayed_default_url?
+      if (@attachment.original_filename.nil? || delayed_default_url?) && !@attachment.split_processing?
         if @attachment.delayed_options.nil? || @attachment.processing_image_url.nil? || !@attachment.processing?
           default_url
         else
