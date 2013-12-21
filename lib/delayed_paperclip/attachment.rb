@@ -36,7 +36,7 @@ module DelayedPaperclip
       end
       
       def split_processing?
-        @options[:only_process] && @options[:only_process] != @options[:delayed][:only_process]
+        @options && @options[:only_process] && @options[:only_process] != @options[:delayed][:only_process]
       end
 
       def processing?
