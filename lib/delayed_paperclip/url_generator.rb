@@ -17,18 +17,16 @@ module DelayedPaperclip
     end
 
     def most_appropriate_url_with_processed(style = nil)
-      if (@attachment.original_filename.nil? || delayed_default_url?) && !@attachment.split_processing?
+      if (@attachment.original_filename.nil? || delayed_default_url?)
         if @attachment.delayed_options.nil? || @attachment.processing_image_url.nil? || !@attachment.processing?
           default_url
         else
           @attachment.processing_image_url
         end
+      elsif @attachment.split_processing? && !@attachment.only_process.include?(style) && @attachment.processing?
+        @attachment.processing_image_url
       else
-        if style && @attachment.only_process.include?(style) || @attachment.delayed_options.nil? || !@attachment.processing? # Return the regular URL if the style is included in the list to generate immediately, or the image has finished processing.
-          @attachment_options[:url]
-        else
-          @attachment.processing_image_url
-        end
+        @attachment_options[:url]
       end
     end
 
@@ -45,6 +43,7 @@ module DelayedPaperclip
       return false if @attachment.dirty?
       return false if not @attachment.delayed_options.try(:[], :url_with_processing)
       return false if not (@attachment.instance.respond_to?(:"#{@attachment.name}_processing?") && @attachment.processing?)
+      return false if @attachment.split_processing?
       true
 
       # OLD CRAZY CONDITIONAL
