@@ -5,9 +5,18 @@ module DelayedPaperclip
     def self.included(base)
       base.alias_method_chain :most_appropriate_url, :processed
       base.alias_method_chain :timestamp_possible?, :processed
+      base.alias_method_chain :for, :processed
     end
 
-    def most_appropriate_url_with_processed
+    def for_with_processed(style_name, options)
+      escape_url_as_needed(
+        timestamp_as_needed(
+            @attachment_options[:interpolator].interpolate(most_appropriate_url(style_name_with_processed), @attachment, style_name),
+            options
+        ), options)
+    end
+
+    def most_appropriate_url_with_processed(style = nil)
       if (@attachment.original_filename.nil? || delayed_default_url?) && !@attachment.split_processing?
         if @attachment.delayed_options.nil? || @attachment.processing_image_url.nil? || !@attachment.processing?
           default_url
@@ -15,7 +24,11 @@ module DelayedPaperclip
           @attachment.processing_image_url
         end
       else
-        @attachment_options[:url]
+        if style && @attachment.only_process.include?(style) || !@attachment.job_is_processing # Return the regular URL if the style is included in the list to generate immediately, or the image has finished processing.
+          @attachment_options[:url]
+        else
+          @attachment.processing_image_url
+        end
       end
     end
 
