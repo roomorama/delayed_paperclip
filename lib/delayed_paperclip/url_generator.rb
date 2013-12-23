@@ -11,7 +11,7 @@ module DelayedPaperclip
     def for_with_processed(style_name, options)
       escape_url_as_needed(
         timestamp_as_needed(
-            @attachment_options[:interpolator].interpolate(most_appropriate_url(style_name_with_processed), @attachment, style_name),
+            @attachment_options[:interpolator].interpolate(most_appropriate_url_with_processed(style_name), @attachment, style_name),
             options
         ), options)
     end
