@@ -24,7 +24,7 @@ module DelayedPaperclip
           @attachment.processing_image_url
         end
       else
-        if style && @attachment.only_process.include?(style) || !@attachment.job_is_processing # Return the regular URL if the style is included in the list to generate immediately, or the image has finished processing.
+        if style && @attachment.only_process.include?(style) || !@attachment.processing? # Return the regular URL if the style is included in the list to generate immediately, or the image has finished processing.
           @attachment_options[:url]
         else
           @attachment.processing_image_url
