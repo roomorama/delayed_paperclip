@@ -30,9 +30,9 @@ module DelayedPaperclip
     end
 
     def process_job(instance_klass, instance_id, attachment_name)
-      instance_klass.constantize.unscoped.find(instance_id).
-        send(attachment_name).
-        process_delayed!
+      instance_model = instance_klass.constantize.unscoped.where(id: instance_id).first
+      return unless instance_model
+      instance_model.send(attachment_name).process_delayed!
     end
 
   end
